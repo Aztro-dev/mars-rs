@@ -1,6 +1,10 @@
 use std::f32::consts::PI;
 
-use crate::{util::{self, draw_arc, draw_arc_lines}, hex, ui::{self, ft}};
+use crate::{
+    hex,
+    ui::ft,
+    util::{self, draw_arc},
+};
 use macroquad::prelude::*;
 
 const R303: f32 = 0.57735026919;
@@ -11,7 +15,7 @@ pub struct Triball {
     pub pos: (f32, f32),
     pub rotation: f32,
     pub vel: Vec3,
-    pub accel: Vec3
+    pub accel: Vec3,
 }
 
 pub struct Field {
@@ -21,13 +25,40 @@ pub struct Field {
 }
 
 impl Triball {
+    pub fn new(size: f32, pos: (f32, f32)) -> Self {
+        return Self {
+            size,
+            pos,
+            rotation: 0.0,
+            vel: Vec3::ZERO,
+            accel: Vec3::ZERO,
+        };
+    }
     pub fn render(&self) {
-        let v1 = util::rotate![0.0, self.size * R303, self.rotation, self.pos]; 
-        let v2 = util::rotate![-self.size / 2.0,-self.size * R306, self.rotation, self.pos];
+        let v1 = util::rotate![0.0, self.size * R303, self.rotation, self.pos];
+        let v2 = util::rotate![-self.size / 2.0, -self.size * R306, self.rotation, self.pos];
         let v3 = util::rotate![self.size / 2.0, -self.size * R306, self.rotation, self.pos];
-        draw_arc(v1, self.size, self.rotation - PI / 3.0, self.rotation - 2.0 * PI/3.0, GREEN);
-        draw_arc(v2, self.size, self.rotation, self.rotation + PI / 3.0, GREEN);
-        draw_arc(v3, self.size, self.rotation + 2.0 * PI/3.0, self.rotation + 3.0 * PI/3.0, GREEN);
+        draw_arc(
+            v1,
+            self.size,
+            self.rotation - PI / 3.0,
+            self.rotation - 2.0 * PI / 3.0,
+            GREEN,
+        );
+        draw_arc(
+            v2,
+            self.size,
+            self.rotation,
+            self.rotation + PI / 3.0,
+            GREEN,
+        );
+        draw_arc(
+            v3,
+            self.size,
+            self.rotation + 2.0 * PI / 3.0,
+            self.rotation + 3.0 * PI / 3.0,
+            GREEN,
+        );
         // draw_arc_lines(v1, self.size, self.rotation - PI / 3.0, self.rotation - 2.0 * PI/3.0, 1.0, hex!(0xDDDDDF));
         // draw_arc_lines(v2, self.size, self.rotation, self.rotation + PI / 3.0, 1.0, hex!(0xDDDDDF));
         // draw_arc_lines(v3, self.size, self.rotation + 2.0 * PI/3.0, self.rotation + 3.0 * PI/3.0, 1.0, hex!(0xDDDDDF));
@@ -50,25 +81,59 @@ impl Triball {
 }
 
 impl Field {
-    pub fn new() -> Field{
+    pub fn new() -> Field {
         let size = screen_width().min(screen_height()) * 0.8;
-        Field { size, pos: (screen_width() / 2.0 - size / 2.0, screen_height() / 2.0 - size / 2.0), triballs: Vec::new()}
+        Field {
+            size,
+            pos: (
+                screen_width() / 2.0 - size / 2.0,
+                screen_height() / 2.0 - size / 2.0,
+            ),
+            triballs: Vec::new(),
+        }
+    }
+
+    pub fn get_size(&self) -> f32 {
+        return self.size;
     }
 
     pub fn render(&mut self) {
         let size = ft() * 12.0 * 0.9;
         self.size = size;
-        self.pos = (screen_width() / 2.0 - size / 2.0, screen_height() / 2.0 - size / 2.0);
+        self.pos = (
+            screen_width() / 2.0 - size / 2.0,
+            screen_height() / 2.0 - size / 2.0,
+        );
 
         let tileSize = self.size / 6.0;
         let colors = [hex!(0xDCABDF), hex!(0xC792DF)];
         for i in 0..6 {
             for j in 0..6 {
-                let index = (i+j) % 2;
-                draw_rectangle(self.pos.0 + i as f32 * tileSize, self.pos.1 + j as f32 * tileSize, tileSize, tileSize, colors[index]);
+                let index = (i + j) % 2;
+                draw_rectangle(
+                    self.pos.0 + i as f32 * tileSize,
+                    self.pos.1 + j as f32 * tileSize,
+                    tileSize,
+                    tileSize,
+                    colors[index],
+                );
             }
         }
-        draw_rectangle_lines(self.pos.0, self.pos.1, self.size, self.size, 6.0, hex!(0xD0C4DF));
+        for triball in self.triballs.iter() {
+            triball.render();
+        }
+        draw_rectangle_lines(
+            self.pos.0,
+            self.pos.1,
+            self.size,
+            self.size,
+            6.0,
+            hex!(0xD0C4DF),
+        );
+    }
+
+    pub fn spawn_triball(&mut self, size: f32, pos: (f32, f32)) {
+        self.triballs.push(Triball::new(size, pos));
     }
 
     // pub fn update(&mut self) {
