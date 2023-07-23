@@ -1,11 +1,11 @@
-use macroquad::prelude::mouse_position;
-use macroquad::shapes::draw_circle;
-use macroquad::shapes::draw_line;
+
+
+
 
 use crate::robot;
 use crate::util;
 use crate::util::absoluteAngleToPoint;
-use std::f32::consts::PI;
+
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
@@ -64,7 +64,7 @@ pub fn boomerang(robot: &Arc<Mutex<robot::Robot>>, target: (f32, f32), timeout: 
     }
 }
 
-pub fn followPath(robot: &Arc<Mutex<robot::Robot>>, path: Vec<(f32,f32)>, timeout: u32, dLead: f32, thetaEnd: f32, rotationCut: f32, lConstants: util::PidConstants, rConstants: util::PidConstants, min: f32) {
+pub fn followPath(robot: &Arc<Mutex<robot::Robot>>, path: Vec<(f32,f32)>, timeout: u32, dLead: f32, _thetaEnd: f32, rotationCut: f32, lConstants: util::PidConstants, rConstants: util::PidConstants, min: f32) {
     let start = Instant::now();
     let mut lCont = util::Pid::new(lConstants);
     let mut rCont = util::Pid::new(rConstants);

@@ -1,5 +1,5 @@
 use macroquad::prelude::*;
-use macroquad::ui::{hash, root_ui, widgets, Skin};
+use macroquad::ui::{root_ui, Skin};
 
 use crate::hex;
 

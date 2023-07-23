@@ -1,6 +1,6 @@
-use macroquad::{prelude::*, color};
+use macroquad::{prelude::*};
 use std::f32::consts::PI;
-use crate::glam::{vec2, vec3, vec4, Mat4, Vec2};
+use crate::glam::{Vec2};
 use crate::ui::ft;
 use crate::util;
 // pub const self.robotSize: f32 = 30.0;
